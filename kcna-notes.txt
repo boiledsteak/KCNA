@@ -1,0 +1,850 @@
+kubernetes & cloud native associate notes
+
+CNCF: cloud native computing foundation
+
+linux foundation: vendor neutral body that maintains open source projects and provide training + certification
+
+
+
+goal of cloud native architecture
+- optimise software and system to be
+-> cost efficient
+-> reliable
+-> faster time to market (throughput)
+
+
+cloud native architecture components
+- microservices
+- immutable infrastructure
+- containers
+- 
+
+
+cloud native architecture characteristics
+- automated: CI/CD
+- self healing: k8
+- scalable: k8
+- cost efficient: k8. when load is low, compute resources should also lower, thus saving cost
+- easy maintenance: microservices architecture
+- secure: ZTA (zero trust architecture). Authenticate all. least privilege
+
+
+
+
+
+immutable infrastructure: cannot be changed. ie containers. if want to change, have to re-deploy the entire container
+
+benefits of immutable infrastructure
+- easier to roll back to prev version instead of having to fix live server
+- by extention, reduced downtime
+- better security since patches can be easily controlled with each new deployment
+
+downsides of immutable infrastructure
+- Overhead: Building and deploying entire systems from scratch can be resource-intensive, requiring more storage and computational power
+- more complex: Additional mechanisms are needed to handle persistent state
+- Building new images and deploying them can take more time compared to making incremental changes to existing systems
+
+
+monolithic architecture
+- self contained
+- include all parts needed to perform a function
+- 
+
+
+problem with monolithic architecture
+- poor scalability
+- hard to implement changes quickly
+
+
+
+
+autoscaling
+- defined by CPU, RAM, and storage metrics
+
+
+horizontal scaling: spawning new compute resources such as more VMs (get more people to lift)
+pros
+- redundancy: auto healing ability
+- easy scale up and down
+- cost efficient
+
+cons
+- requires orchestration tool; k8
+- latency: nodes may be in different geological locations
+
+
+
+vertical scaling: change the size of underlying resources (build muscle to lift more)
+pros
+- low latency: single node
+- better utilisation of compute resources since just single node
+- simpler
+
+cons
+- might need downtime when scaling
+- limit to scaling
+- single point of failure
+- 
+
+
+
+
+CloudEvents: a standard that defines how serverless computing event data should be like
+
+Open Container Initiative (OCI): a standard that defines how containers are built and run
+runtime
+image
+distribution
+
+
+
+CNCF project stages
+
+sandbox
+incubating
+graduation
+
+
+mature projects may straight away enter the incubating stage. not all have to start from sandbox
+
+
+
+SRE metrics
+SLA : agreement
+SLO : objective
+SLI : indicator
+
+
+
+chroot jail : an early concept of containerisation in linux
+namespaces could be considered a concept of containerisation too
+
+
+
+4Cs of cloud native security surfaces
+1. code
+2. container
+3. cluster (k8)
+4. cloud
+
+
+what k8 can do
+- Providing compute resources like virtual machines where containers can run on
+- Schedule containers to servers in an efficient way
+- Allocate resources like CPU and memory to containers
+- Manage the availability of containers and replace them if they fail
+- Scale containers if load increases
+- Provide networking to connect containers together
+- Provision storage if containers need to persist data
+
+
+
+
+
+
+
+
+
+
+Kubernetes Cluster
+├── Kubernetes Control Plane
+│   ├── kube-apiserver
+│   ├── etcd
+│   ├── Controller Manager
+│   └── Scheduler
+├── Service Mesh (Linkerd)
+│   ├── Control Plane
+│   │   ├── Control Plane Components (Linkerd control plane)
+│   │   │   ├── linkerd-controller: Manages various aspects of the mesh.
+│   │   │   ├── linkerd-destination: Provides service discovery.
+│   │   │   ├── linkerd-identity: Manages TLS certificates for mTLS.
+│   │   │   ├── linkerd-proxy-injector: Injects Linkerd proxies into pods.
+│   │   │   └── linkerd-sp-validator: Validates service profiles.
+│   └── Data Plane
+│       ├── Worker Nodes
+│       │   ├── Sidecar Proxies (Linkerd proxies)
+│       │   ├── Services (Microservices running in containers)
+│       │   ├── Kubelet [ESSENTIAL]
+│       │   ├── Container Runtime (e.g., Docker, containerd)
+│       │   └── Kube-proxy [ESSENTIAL]
+│       └── Networking Components
+└── Outside Service Mesh
+	├── Persistent Storage Systems (e.g., NFS, GlusterFS, AWS EBS)
+	├── Ingress Controllers (e.g., NGINX, Traefik)
+	├── External DNS (e.g., ExternalDNS)
+	├── CI/CD Pipelines (e.g., Jenkins, GitLab CI/CD)
+	├── Monitoring Tools (e.g., Prometheus, Grafana)
+	└── Logging Tools (e.g., ELK Stack, Fluentd)
+
+
+
+
+
+
+
+
+
+
+
+
+k8 2 parts
+1. control plane: management of nodes
+2. data plane: worker nodes
+
+
+service mesh: a layer of multiple proxies that sit between server and client. used for monitoring amongst other things
+-> the control plane and data plane is inside the service mesh
+-> things outside service mesh is like nginx, cicd tools, prometheus
+-> typically uses a sidecar to offload port mapping
+
+
+
+
+
+docker containers share the same kernel as the host
+
+
+components of the control plane
+1. kube-apiserver
+-> all components interact with this
+-> this is where users access the cluster
+
+2. etcd
+-> a db that stores the state of the cluster
+
+3. kube-scheduler
+-> assigns worker node to new scheduled workload
+
+4. kube-controller-manager
+-> several control systems that manage the state of the cluster. ie set the number of apps available at all times
+
+
+
+components of the worker nodes/ data plane
+1. container runtime
+-> runs the containers on the nodes. containerd
+
+2. kubelet [ESSENTIAL]
+-> agent on every node that talks to the kube-apiserver
+-> ensures the node can be managed by the cluster
+
+3. kube-proxy [ESSENTIAL]
+-> when a request reaches cluster IP, kube-proxy forwards to the right pod
+-> runs on each node
+-> allows pods to talk to one another
+
+
+
+
+with the above architecture, apps running on worker nodes can still run without control plane
+
+
+can create virtual clusters using namespace as well. good for very large clusters where you need finer control of resources and permissions by using ROLE BASED ACCESS CONTROL (RBAC)
+
+
+4 kinds of objects within RBAC
+	1. role
+		-> specifies permissions for a namespace
+
+			EXMAPLE (only allows pods to perform get, list, and watch within my-namespace)
+
+
+			apiVersion: rbac.authorization.k8s.io/v1
+			kind: Role
+			metadata:
+			  namespace: my-namespace
+			  name: my-role
+			rules:
+			- apiGroups: [""]
+			  resources: ["pods"]
+			  verbs: ["get", "list", "watch"]
+
+
+
+	2. clusterRole
+		-> specifies permissions within the cluster, so across multiple namespaces
+
+
+	3. RoleBinding
+		-> more explicit specification of permissions from a pre-defined role object
+		-> can apply to user, group, or service account within a specific namespace
+
+
+	4. ClusterRoleBinding
+		-> more explicit specification of permissions from a pre-defined ClusterRole object
+		-> can apply to user, group, or service account across several namespaces
+
+
+
+ingress: a collection of rules that allow inbound connections into the cluster
+
+
+
+kubernetes API process:
+
+all API requests go thorugh these steps
+
+1. Authentication: verify identity with cert or other identity management system
+
+2. Authorisation: decide what the requester can do with RBAC
+
+3. Admission Control: validates request. check if request is dangerous etc..
+
+
+
+
+by default, all pods within a cluster can talk to one another.
+to control this behaviour, need to configure Network Policy
+requires a controller to implement the network policy
+
+
+scheduling: selecting the right node for the workload
+
+kubernetes is declarative. need to declare hardware requirements for a workload, then the kube-scheduler will find a node that fits the requirements. if several nodes fit, the node with least number of pods is picked
+
+if cannot find a node to fit the requirements, the kube-scheduler will keep retrying until a node that fits, exists 
+
+
+can config certain pods to be scheduled to certain nodes
+these are the methods
+
+NodeSelector
+- add NodeSelector field in pod YAMML and specify which node
+- several pods can be tied to single NodeSelector label
+
+Affinity
+- can indicate if a selected node is soft rule or hard
+
+NodeName
+- schedules specific pod to specific node
+
+
+
+taints and constraints
+- NodeSelector asks scheduler to schedule pods to certain nodes based on some specifications
+- tains is the opposite. AVOID scheduling certain pods to certain nodes based on some specifications
+
+A taint consists of a key, value, and effect. 
+	key=value:effect
+ie
+	kubectl taint node worker region=useast2:NoSchedule
+
+
+
+
+
+
+pod vs node:
+
+- pod is smallest unit in kubernetes infrastructure
+- node is the VM or machine that holds the entire cluster
+- cluster has many nodes
+- nodes have many pods
+- pods have container
+
+
+
+k8 objects
+
+- workload-oriented objects
+  = handle workloads
+
+workload-oriented controller objects
+-- ReplicaSet
+  = ensures a specified number of pods are running at all times
+
+-- deployment
+  = manages multiple ReplicaSets
+  = the big object with 1x YAML file. ie gitlab app YAML is considered a deployment
+
+-- StatefulState
+  = deployments with persistent data like database
+  = usually requires headless services
+
+-- DaemonSet
+	= ensures all nodes run a copy of the pods
+
+-- jobs
+	= creates pods to perform a task and terminates after
+	= use this key:
+		ttlSecondsAfterFinished
+
+-- cronJob
+	= same as job but based on time. ie perform at 4am
+
+
+
+
+- infrastructure-oriented objects
+  = handle config
+
+-- ClusterIP service (sometimes known as service IP)
+	= gives virtual IP to a set of pods
+
+-- NodePort
+	= opens ports on all nodes in a cluster
+
+-- LoadBalancer
+	= yknow
+
+-- ExternalName
+	= create alias for public (external) websites
+
+-- Headless Service
+	= when no need load balancing, use this
+
+
+
+
+--> all delcared in YAML
+
+
+compulsary YAML fields
+1. apiVersion: each object's version
+2. kind: the kind of object to create
+3. metadata: uniquely identifying data like a name. can create namespace for objects with same name
+4. spec: desired state of the object like how much storage, what ports to use
+
+
+
+pods dont need NAT talk to one another
+
+
+
+
+
+
+
+to access k8 node, need to access the k8 api. this can be done using kubectl
+
+
+
+helm: package manager for kubernetes. updates the objects in your node
+
+
+
+
+all containers within a pod share the same IP address
+
+initContainers: if container is defined as initContainers in YAML, then it will start first before main container starts. a sidecar container
+
+
+key settings to set for containers in a pod
+1. resources: cpu,  storage etc
+2. livenessProbe: periodically check if app is alive. restart container if no response
+3. securityContext: user and group settings
+
+
+
+pod lifecycle
+1. pending: 
+- pod accepted by cluster but container not running yet. 
+- pod could be waiting to be scheduled. 
+- pod only run when got workload scheduled. 
+- pod could also be downloading/ setting up the container / image
+
+2. running:
+- pod up and container running
+
+3. succeeded:
+- all containers in pod running
+
+4. failed:
+- all containers in pod stopped
+- at least one container exit with failed status
+
+5. unknown:
+- state of pod could not be determined
+- could be issue communicating with pod
+
+
+
+
+mounted volumes talk to the pod, not the container
+mounted volumes can share data between containers, within a pod
+
+
+
+PersistentVolume & PersistentVolumeClaims (PVC)
+- PVC is created with how much storage and location of storage, declared
+
+- When a PVC is created, Kubernetes looks for a matching PV. 
+If a suitable PV is found, it binds the PVC to the PV. 
+If not, the PVC will remain unbound until a matching PV becomes available
+
+- Once bound, the PVC can be used by a pod to mount the storage defined by the PV
+
+- When the PVC is deleted, the PV becomes “released” but retains the data. 
+The actual data cleanup depends on the reclaim policy (Retain, Recycle, Delete) defined on the PV
+
+
+
+ConfigMap
+- maps config files (YAML) of all nodes in the cluster
+- maps ENV variables too
+
+
+
+
+Autoscalers
+
+1. Horizontal pod autoscaler (HPA)
+	- watches ReplicaSets and scales accordingly
+
+2. Cluster autoscaler
+	- works with HPA to scale clusters
+
+3. Vertical pod autoscaler (VPA)
+	- enables vertical scaling for nodes
+
+
+metrics-server
+- enables horizontal scaling
+- can be replaced with Prometheus Adapter for Kubernetes Metrics APIs
+
+
+
+kebernetes-based event driven autoscaler (KEDA)
+- auto scale based on events such as database query instead of metrics
+
+
+
+
+
+
+K3: k8 distro built for IoT and edge computing
+
+
+
+Open Policy Agent(OPA): enforce policies
+
+
+
+custom resource definition (CRD): api extension to define custom resources
+
+
+kata: docker but better security
+
+
+
+___________________________
+
+gitops & ArgoCD
+___________________________
+
+
+GitOps uses pull based approach
+
+agent watches the git repo for any changes, particularly to IAC. 
+If there are changes then infrastructure is also updated accordingly
+
+
+
+___________________________
+
+observability
+
+___________________________
+
+observability is not the same as monitoring
+
+observability is the bigger umbrella. There are more categories apart from monitoring
+
+what's more important than monitoring, is ensuring nodes in a system are still managed despite being under load or in error state
+
+goal of observability: analysis of system from collected data
+
+analyse the behavior of software and adapt it constantly based on the outcome
+
+
+
+3 types of data containers provide for observability
+	1. logs
+		- error messages, warnings, text based
+
+	2. metrics
+		- quantitative data ie. number of requests
+
+	3. traces
+		- how long a request takes, status of request
+		- ie. jaeger
+
+
+3 ways to send logging data to centralised repo
+	1. node-level logging
+		= log shipping tool per node
+
+	2. logging via sidecar container
+		= sidecar container per container
+
+	3. application-level logging
+		= app itself sends log info to central repo
+
+
+grafana loki: ship and store logs
+
+
+Prometheus 4 core metrics
+	a) counter
+		= simple number that increases. error count etc
+
+	b) gauge
+		= values that go up and down. memory size etc
+
+	c) histogram
+		= yknow
+
+	d) summary
+		= histogram + total count of observations
+
+
+AlertManager: tool that works with prometheus to send alerts when certain metrics' threshold are hit
+
+
+Jaeger: tracing 
+
+
+linkerd: manages traffic flows between services, enforces access policies, and aggregates telemetry data, all without requiring changes to application code
+
+
+k8 objects provides a "record of intent"
+
+
+6 layers of CNCF landscape
+- provisioning
+- runtime
+- orchestration & management
+- app definition and development
+- observability & analysis
+- platform
+
+
+kubectl list all api groups:
+	kubectl api-versions
+
+
+container network interface (CSI):
+	a framework that defines how plugins and k8  should manage container networking, in a standardised way
+
+Container Runtime Interface (CRI):
+	allows multiple runtimes ie. docker and containerd to work together without re-compiling
+
+
+
+label selector: the app=nginx part 
+	kubectl get pods -l app=nginx
+
+field selector the --field-selector=status.phase=Running part
+	kubectl get pods --field-selector=status.phase=Running
+
+
+
+ReplicationControllers
+-> old tech, replaced by ReplicaSet
+-> does not support set-based label selectors
+
+EXAMPLE YAML:
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: example-replicaset
+spec:
+  replicas: 3
+  selector:
+	matchLabels:
+	  app: nginx
+	matchExpressions:
+	  - key: environment
+		operator: In
+		values: ["production", "staging"]
+
+
+
+containerd: designed to be more simple than docker
+
+
+canary deployment: deploy the new app to a small group of users while still running the old app. when okay with small group then fully release new app
+
+
+blue/green deployment: production and dev versions. can switch to either one with zero downtime
+
+
+Pod Security Admission (PSA): [aka admission controller]
+	replaced PodSecurityPolicies key
+	-> apply security profiles to namespaces
+
+	EXAMPLE
+
+	apiVersion: v1
+		kind: Namespace
+		metadata:
+		  name: my-namespace
+		  labels:
+			pod-security.kubernetes.io/enforce: baseline
+
+
+
+	3 security profiles u can pick
+		1. privileged: least security
+		2. baselined: minimal security
+		3. restricted: most security
+
+
+in a hub and spoke architecture, k8's hub is the API server 
+
+
+/metrics
+	-> standard endpoint used by k8 objects to expose their metrics
+
+
+Cloud Controller Manager: link your cluster to cloud provider
+
+
+CoreDNS: the default DNS server for K8
+
+
+knative: serverless platform for K8 focused on dev
+
+fission: serverless framework for k8
+
+
+metadata in k8 objects .yaml
+-> annotations
+-> labels
+
+	EXAMPLE
+
+	apiVersion: v1
+	kind: Pod
+	metadata:
+	  name: example-pod
+->	  labels:
+	    app: myapp
+	    environment: production
+->	  annotations:
+	    description: "This is an example pod"
+	    version: "1.0.0"
+	    maintainer: "devops@example.com"
+	spec:
+	  containers:
+	  - name: myapp-container
+	    image: nginx:latest
+	    ports:
+	    - containerPort: 80
+
+
+
+
+
+thrashing: when horizontal scaling occurs too rapidly due to highly volatile metrics. causes degrade in performance
+
+
+attribute-based access control: finer control of access. can specify ip addr instead of just role
+
+
+imagePullPolicy: key that specifies when image will be pulled for container
+
+	EXMAPLE
+
+	apiVersion: v1
+	kind: Pod
+	metadata:
+	  name: example-pod
+	spec:
+	  containers:
+	  - name: myapp-container
+	    image: myapp:latest
+	    imagePullPolicy: Always
+
+
+
+NetworkPolicy: set whether ingress or egress
+
+
+
+
+___________________________
+
+K8 security
+
+___________________________
+
+- harden hardware, software, firmware
+- harden config options (YAML)
+- harden network
+- security in depth
+- firewalls
+- pod to pod encryption
+- minimise base image
+- ensure immutability
+- SAST, DAST
+- SELinux
+- NIDs, SIEM, behavioural analytics
+
+
+
+
+
+
+
+
+
+____________________
+
+k8 commands
+
+____________________
+
+
+
+-> list available objects in node (see all items declared by yaml)
+kubectl api-resources
+
+
+-> explain something about k8
+kubectl explain pod
+
+
+-> create k8 object from YAML
+kubectl create -f <your-file>.yaml
+
+
+
+
+
+
+
+
+
+
+  ____ ___ _____ _        _    ____  
+ / ___|_ _|_   _| |      / \  | __ ) 
+| |  _ | |  | | | |     / _ \ |  _ \ 
+| |_| || |  | | | |___ / ___ \| |_) |
+ \____|___| |_| |_____/_/   \_\____/ 
+
+
+https://chatgpt.com/share/25bae638-6692-4efd-a432-0da6611d9524
+
+
+ 1. set-up minikube
+
+ 2. start minikube
+
+ - 2a. minikube start --cpus 4 --memory 10240
+ - 2b. miniikube dashboard
+
+ 3. enable ingress
+
+ - 3a. minikube addons enable ingress
+
+4. set up persistent volume
+
+- 4a. //TODO SEE CHATGPT
+
+
+//TODO TRY KUBEVIEW
+
+
+
