@@ -761,6 +761,9 @@ imagePullPolicy: key that specifies when image will be pulled for container
 
 NetworkPolicy: set whether ingress or egress
 
+default k8 update: rolling updates
+
+
 
 
 
