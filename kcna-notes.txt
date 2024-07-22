@@ -301,9 +301,9 @@ such controller for example: cillium
 
 ingress objects work at application layer while network policy works at network layer
 
-ingress directs traffic thats going towards a certain domain, to the right service (nodes)
+ingress directs traffic thats going towards a certain domain, to the right service (pods)
 
-a service is a logical group of nodes
+a service is a logical group of pods
 
 
 scheduling: selecting the right node for the workload
