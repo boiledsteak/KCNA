@@ -537,6 +537,10 @@ custom resource definition (CRD): api extension to define custom resources
 kata: docker but better security
 
 
+kubernetes API serverdefault authorisation method is ALLOW ALL
+
+
+
 
 ___________________________
 
@@ -790,6 +794,16 @@ required fields for all k8 .yaml
 - kind
 - metadata
 - spec
+
+
+worker nodes run workloads
+
+
+All containers in a pod share a single IP address
+
+
+kubeadm: used for cluster bootstrapping
+
 
 
 ___________________________
