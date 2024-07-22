@@ -297,6 +297,14 @@ by default, all pods within a cluster can talk to one another.
 to control this behaviour, need to configure Network Policy
 requires a controller to implement the network policy
 
+such controller for example: cillium
+
+ingress objects work at application layer while network policy works at network layer
+
+ingress directs traffic thats going towards a certain domain, to the right service (nodes)
+
+a service is a logical group of nodes
+
 
 scheduling: selecting the right node for the workload
 
