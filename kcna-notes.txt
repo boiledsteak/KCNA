@@ -765,6 +765,11 @@ default k8 update: rolling updates
 
 
 
+helm install vs helm upgrade --install
+-> install means install from whatever chart that exists
+-> upgrade --install means upgrade the chart first then install
+
+
 
 
 ___________________________
@@ -854,10 +859,27 @@ https://chatgpt.com/share/25bae638-6692-4efd-a432-0da6611d9524
 GITLAB USING HELM
 https://gist.github.com/nirbhabbarat/8fe32ccaaacc782272c9f49a753e97b4
 
-minikube start --driver=docker 
+minikube start \
+  --driver=docker \
+  --cpus 3 \
+  --memory 4500 
 
 // the default cpu and ram is 2 cpu 2 gb
 
 minikube addons enable ingress
 
 minikube addons enable dashboard
+
+minikube addons enable metrics-server
+
+helm repo add gitlab https://charts.gitlab.io/
+
+helm upgrade --install gitlab gitlab/gitlab \
+   --timeout 600s   \
+   --set global.hosts.domain=$(minikube ip).nip.io \
+   --set global.hosts.externalIP=$(minikube ip) \
+   -f https://gitlab.com/gitlab-org/charts/gitlab/raw/master/examples/values-minikube-minimum.yaml
+
+kubectl get pods -w
+
+
