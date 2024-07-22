@@ -383,7 +383,7 @@ workload-oriented controller objects
 
 
 
-- infrastructure-oriented objects
+- infrastructure-oriented objects (service objects)
   = handle config
 
 -- ClusterIP service (sometimes known as service IP)
