@@ -850,4 +850,14 @@ https://chatgpt.com/share/25bae638-6692-4efd-a432-0da6611d9524
 //TODO TRY KUBEVIEW
 
 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+GITLAB USING HELM
+https://gist.github.com/nirbhabbarat/8fe32ccaaacc782272c9f49a753e97b4
 
+minikube start --driver=docker 
+
+// the default cpu and ram is 2 cpu 2 gb
+
+minikube addons enable ingress
+
+minikube addons enable dashboard
