@@ -360,6 +360,7 @@ k8 objects
 workload-oriented controller objects
 -- ReplicaSet
   = ensures a specified number of pods are running at all times
+  - used during scaling
 
 -- deployment
   = manages multiple ReplicaSets
@@ -372,6 +373,7 @@ workload-oriented controller objects
 
 -- DaemonSet
 	= ensures all nodes run a copy of the pods
+	= automatically adds new pods to new nodes
 
 -- jobs
 	= creates pods to perform a task and terminates after
@@ -783,7 +785,11 @@ helm install vs helm upgrade --install
 cgroups (control groups)
 
 
-
+required fields for all k8 .yaml
+- apiVersion
+- kind
+- metadata
+- spec
 
 
 ___________________________
