@@ -882,4 +882,4 @@ helm upgrade --install gitlab gitlab/gitlab \
 
 kubectl get pods -w
 
-
+kubectl get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' | base64 --decode ; echo
