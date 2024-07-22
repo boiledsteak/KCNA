@@ -862,7 +862,7 @@ https://gist.github.com/nirbhabbarat/8fe32ccaaacc782272c9f49a753e97b4
 minikube start \
   --driver=docker \
   --cpus 3 \
-  --memory 4500 
+  --memory 8192 
 
 // the default cpu and ram is 2 cpu 2 gb
 
