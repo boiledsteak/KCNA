@@ -537,7 +537,7 @@ custom resource definition (CRD): api extension to define custom resources
 kata: docker but better security
 
 
-kubernetes API serverdefault authorisation method is ALLOW ALL
+kubernetes API server default authorisation method is ALLOW ALL
 
 
 
@@ -638,7 +638,7 @@ kubectl list all api groups:
 	kubectl api-versions
 
 
-container network interface (CSI):
+container network interface (CNI):
 	a framework that defines how plugins and k8  should manage container networking, in a standardised way
 
 Container Runtime Interface (CRI):
