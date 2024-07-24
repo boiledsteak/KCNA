@@ -78,4 +78,4 @@ not KCNA exam dump but possible KCNA exam questions
 
 38. RBAC vs attribute based access control?
 
-39. 
+39. what flags to include when performing kubectl logs?
