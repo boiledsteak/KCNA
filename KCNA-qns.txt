@@ -2,17 +2,7 @@ kubernetes & cloud native associate QUESTIONS
 
 not KCNA exam dump but possible KCNA exam questions
 
-1. what does CNCF stand for
 
-2. what does linux foundation do?
-
-3. what are the goals of cloud native architecture
-
-4. what does immutable infrastructure mean? Benefits? Downisdes?
-
-5. pros and cons of monolithic infrastructure?
-
-6. vertical vs horizontal scaling
 
 7. What is CloudEvents?
 
@@ -20,7 +10,7 @@ not KCNA exam dump but possible KCNA exam questions
 
 9. what are the CNCF project stages?
 
-10. what are the metrics for SRE?
+
 
 11. what is service mesh?
 
@@ -79,3 +69,6 @@ not KCNA exam dump but possible KCNA exam questions
 38. RBAC vs attribute based access control?
 
 39. what flags to include when performing kubectl logs?
+
+40. what is container network interface?
+

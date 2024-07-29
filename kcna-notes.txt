@@ -239,7 +239,8 @@ components of the worker nodes/ data plane
 with the above architecture, apps running on worker nodes can still run without control plane
 
 
-can create virtual clusters using namespace as well. good for very large clusters where you need finer control of resources and permissions by using ROLE BASED ACCESS CONTROL (RBAC)
+can create virtual clusters using namespace as well. 
+good for very large clusters where you need finer control of resources and permissions by using ROLE BASED ACCESS CONTROL (RBAC)
 
 
 4 kinds of objects within RBAC
@@ -308,7 +309,9 @@ a service is a logical group of pods
 
 scheduling: selecting the right node for the workload
 
-kubernetes is declarative. need to declare hardware requirements for a workload, then the kube-scheduler will find a node that fits the requirements. if several nodes fit, the node with least number of pods is picked
+kubernetes is declarative. need to declare hardware requirements for a workload, 
+then the kube-scheduler will find a node that fits the requirements. 
+if several nodes fit, the node with least number of pods is picked
 
 if cannot find a node to fit the requirements, the kube-scheduler will keep retrying until a node that fits, exists 
 
@@ -774,7 +777,6 @@ imagePullPolicy: key that specifies when image will be pulled for container
 
 
 
-NetworkPolicy: set whether ingress or egress
 
 default k8 update: rolling updates
 
