@@ -405,7 +405,9 @@ workload-oriented controller objects
 	= create alias for public (external) websites
 
 -- Headless Service
-	= when no need load balancing, use this. does not have cluster IP
+	= used when no need load balancing
+	= does not have clusterIP
+	= directly manage pods and perform manual load balancing
 
 
 
