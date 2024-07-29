@@ -14,7 +14,7 @@ not KCNA exam dump but possible KCNA exam questions
 
 11. what is service mesh?
 
-12. what are the components of the components of the control plane?
+12. what are the components of the control plane?
 
 13. what are the components of the data plane?
 
