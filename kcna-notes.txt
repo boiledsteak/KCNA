@@ -405,7 +405,7 @@ workload-oriented controller objects
 	= create alias for public (external) websites
 
 -- Headless Service
-	= when no need load balancing, use this
+	= when no need load balancing, use this. does not have cluster IP
 
 
 
@@ -808,7 +808,7 @@ kubeadm: used for cluster bootstrapping
 
 
 
-when performing kubectl logs, only the container need to specify -p. Pod don't need to specify -p
+when performing kubectl logs, only the container need to specify -c. Pod don't need to specify -p
 
 
 
